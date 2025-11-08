@@ -342,11 +342,15 @@ require('lazy').setup({
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
+        defaults = {
+          mappings = {
+            i = {
+              ['<c-j>'] = 'move_selection_next',
+              ['<c-k>'] = 'move_selection_previous',
+              ['<M-Return>'] = 'select_vertical',
+            },
+          },
+        },
         -- pickers = {}
         extensions = {
           ['ui-select'] = {
@@ -959,6 +963,14 @@ require('lazy').setup({
     'github/copilot.vim',
   },
 
+  -- Maximize/minimize splits
+  {
+    'szw/vim-maximizer',
+    keys = {
+      { '<leader>m', '<cmd>MaximizerToggle<CR>', desc = 'Toggle maximize split' },
+    },
+  },
+
   -- File explorer
   {
     'nvim-tree/nvim-tree.lua',
@@ -967,18 +979,18 @@ require('lazy').setup({
     },
     config = function()
       local function on_attach(bufnr)
-        local api = require('nvim-tree.api')
-        
+        local api = require 'nvim-tree.api'
+
         -- Default mappings
         api.config.mappings.default_on_attach(bufnr)
-        
+
         -- Custom mappings
         vim.keymap.set('n', 'l', api.node.open.edit, { buffer = bufnr, desc = 'Open/Expand' })
         vim.keymap.set('n', 'h', api.node.navigate.parent_close, { buffer = bufnr, desc = 'Close Directory' })
         vim.keymap.set('n', 'c', api.tree.collapse_all, { buffer = bufnr, desc = 'Collapse All' })
       end
-      
-      require('nvim-tree').setup({
+
+      require('nvim-tree').setup {
         -- Disable netrw
         disable_netrw = true,
         hijack_netrw = true,
@@ -1010,8 +1022,8 @@ require('lazy').setup({
         },
         -- Custom keymaps
         on_attach = on_attach,
-      })
-      
+      }
+
       -- Keymap to toggle nvim-tree
       vim.keymap.set('n', '<leader>ge', '<cmd>NvimTreeToggle<CR>', { desc = '[G]o to file [E]xplorer' })
     end,
