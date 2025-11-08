@@ -956,6 +956,64 @@ require('lazy').setup({
   {
     'github/copilot.vim',
   },
+
+  -- File explorer
+  {
+    'nvim-tree/nvim-tree.lua',
+    dependencies = {
+      'nvim-tree/nvim-web-devicons',
+    },
+    config = function()
+      local function on_attach(bufnr)
+        local api = require('nvim-tree.api')
+        
+        -- Default mappings
+        api.config.mappings.default_on_attach(bufnr)
+        
+        -- Custom mappings
+        vim.keymap.set('n', 'l', api.node.open.edit, { buffer = bufnr, desc = 'Open/Expand' })
+        vim.keymap.set('n', 'h', api.node.navigate.parent_close, { buffer = bufnr, desc = 'Close Directory' })
+        vim.keymap.set('n', 'c', api.tree.collapse_all, { buffer = bufnr, desc = 'Collapse All' })
+      end
+      
+      require('nvim-tree').setup({
+        -- Disable netrw
+        disable_netrw = true,
+        hijack_netrw = true,
+        -- View settings
+        view = {
+          width = 30,
+          side = 'left',
+        },
+        -- Renderer settings
+        renderer = {
+          icons = {
+            show = {
+              file = vim.g.have_nerd_font,
+              folder = vim.g.have_nerd_font,
+              folder_arrow = vim.g.have_nerd_font,
+              git = vim.g.have_nerd_font,
+            },
+          },
+        },
+        -- Git integration
+        git = {
+          enable = true,
+          ignore = false,
+        },
+        -- Filters
+        filters = {
+          dotfiles = false,
+          custom = { '.git' },
+        },
+        -- Custom keymaps
+        on_attach = on_attach,
+      })
+      
+      -- Keymap to toggle nvim-tree
+      vim.keymap.set('n', '<leader>ge', '<cmd>NvimTreeToggle<CR>', { desc = '[G]o to file [E]xplorer' })
+    end,
+  },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
