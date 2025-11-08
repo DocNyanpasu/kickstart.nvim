@@ -49,7 +49,7 @@ vim.o.signcolumn = 'yes'
 vim.o.updatetime = 250
 
 -- Decrease mapped sequence wait time
-vim.o.timeoutlen = 300
+vim.o.timeoutlen = 100
 
 -- Configure how new splits should be opened
 vim.o.splitright = true
@@ -178,6 +178,9 @@ require('lazy').setup({
         style = 'dark', -- Choose between 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer', 'light'
       }
       require('onedark').load()
+
+      vim.api.nvim_set_hl(0, '@spell', { fg = nil, bg = nil, gui = nil })
+      vim.api.nvim_set_hl(0, '@spell.python', { fg = nil, bg = nil, gui = nil })
     end,
   },
 
@@ -784,6 +787,11 @@ require('lazy').setup({
         -- See :h blink-cmp-config-keymap for defining your own keymap
         preset = 'default',
 
+        -- Custom mappings for navigation
+        ['<C-j>'] = { 'select_next', 'fallback' },
+        ['<C-k>'] = { 'select_prev', 'fallback' },
+        ['<CR>'] = { 'accept', 'fallback' },
+
         -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
       },
@@ -860,8 +868,6 @@ require('lazy').setup({
       }
       -- Keymaps
       vim.keymap.set('n', 'gp', '<cmd>Lspsaga peek_definition<CR>', { desc = '[G]oto [P]eek definition' })
-      vim.keymap.set('n', 'gt', '<cmd>Lspsaga peek_type_definition<CR>', { desc = '[G]oto [T]ype definition (peek)' })
-      vim.keymap.set('n', 'gh', '<cmd>Lspsaga finder<CR>', { desc = '[G]oto [H]elp (LSP finder)' })
     end,
     dependencies = {
       'nvim-treesitter/nvim-treesitter',
@@ -912,7 +918,7 @@ require('lazy').setup({
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'python' },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -944,7 +950,7 @@ require('lazy').setup({
   -- require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
@@ -1034,6 +1040,18 @@ require('lazy').setup({
       vim.keymap.set({ 'n', 'x', 'o' }, 's', '<Plug>(leap)')
       vim.keymap.set('n', 'S', '<Plug>(leap-from-window)')
     end,
+  },
+  {
+    'romgrk/barbar.nvim',
+    init = function()
+      vim.g.barbar_auto_setup = false
+    end,
+    opts = {
+      -- lazy.nvim will automatically call setup for you. put your options here, anything missing will use the default:
+      -- animation = true,
+      -- insert_at_start = true,
+      -- …etc.
+    },
   },
 }, {
   ui = {
