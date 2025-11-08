@@ -1028,6 +1028,13 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>ge', '<cmd>NvimTreeToggle<CR>', { desc = '[G]o to file [E]xplorer' })
     end,
   },
+  {
+    'ggandor/leap.nvim',
+    config = function()
+      vim.keymap.set({ 'n', 'x', 'o' }, 's', '<Plug>(leap)')
+      vim.keymap.set('n', 'S', '<Plug>(leap-from-window)')
+    end,
+  },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
