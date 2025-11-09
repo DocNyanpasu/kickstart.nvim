@@ -157,34 +157,32 @@ end
 local rtp = vim.opt.rtp
 rtp:prepend(lazypath)
 
--- [[ Configure and install plugins ]]
---
---  To check the current status of your plugins, run
---    :Lazy
---
---  You can press `?` in this menu for help. Use `:q` to close the window
---
---  To update plugins you can run
---    :Lazy update
---
--- NOTE: Here is where you install your plugins.
+-- PLUGINS
 require('lazy').setup({
-  -- Onedark theme
   {
-    'navarasu/onedark.nvim',
+    'catppuccin/nvim',
+    name = 'catppuccin',
     priority = 1000,
     config = function()
-      require('onedark').setup {
-        style = 'dark', -- Choose between 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer', 'light'
-      }
-      require('onedark').load()
-
-      vim.api.nvim_set_hl(0, '@spell', { fg = nil, bg = nil, gui = nil })
-      vim.api.nvim_set_hl(0, '@spell.python', { fg = nil, bg = nil, gui = nil })
+      vim.cmd.colorscheme 'catppuccin-macchiato' -- catppuccin-latte, catppuccin-frappe, catppuccin-macchiato, catppuccin-mocha
     end,
   },
 
-  -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
+  -- -- Onedark theme
+  -- {
+  --   'navarasu/onedark.nvim',
+  --   priority = 1000,
+  --   config = function()
+  --     require('onedark').setup {
+  --       style = 'dark', -- Choose between 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer', 'light'
+  --     }
+  --     require('onedark').load()
+  --
+  --     vim.api.nvim_set_hl(0, '@spell', { fg = nil, bg = nil, gui = nil })
+  --     vim.api.nvim_set_hl(0, '@spell.python', { fg = nil, bg = nil, gui = nil })
+  --   end,
+  -- },
+
   'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
 
   -- NOTE: Plugins can also be added by using a table,
@@ -498,7 +496,13 @@ require('lazy').setup({
           -- Jump to the definition of the word under your cursor.
           --  This is where a variable was first declared, or where a function is defined, etc.
           --  To jump back, press <C-t>.
-          map('grd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
+          map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
+
+          -- Jump to definition in a split
+          map('gs', function()
+            vim.cmd 'vsplit'
+            vim.lsp.buf.definition()
+          end, '[G]oto definition in [S]plit')
 
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.
@@ -864,7 +868,6 @@ require('lazy').setup({
       require('lspsaga').setup {
         -- Keybindings for peek
         -- Use 'gp' to peek definition
-        -- Use 'gt' to peek type definition
       }
       -- Keymaps
       vim.keymap.set('n', 'gp', '<cmd>Lspsaga peek_definition<CR>', { desc = '[G]oto [P]eek definition' })
@@ -1045,13 +1048,10 @@ require('lazy').setup({
     'romgrk/barbar.nvim',
     init = function()
       vim.g.barbar_auto_setup = false
+      vim.keymap.set('n', 'gt', '<Cmd>BufferNext<CR>', { desc = 'Go to next buffer' })
+      vim.keymap.set('n', 'gT', '<Cmd>BufferPrevious<CR>', { desc = 'Go to previous buffer' })
     end,
-    opts = {
-      -- lazy.nvim will automatically call setup for you. put your options here, anything missing will use the default:
-      -- animation = true,
-      -- insert_at_start = true,
-      -- …etc.
-    },
+    opts = {},
   },
 }, {
   ui = {
